@@ -1,0 +1,54 @@
+diff --git a/lib/ui/BUILD.gn b/lib/ui/BUILD.gn
+index d2bafb751..6df56ae91 100644
+--- a/lib/ui/BUILD.gn
++++ b/lib/ui/BUILD.gn
+@@ -121,7 +121,6 @@ source_set_maybe_fuchsia_legacy("ui") {
+     "//flutter/third_party/tonic",
+     "//third_party/dart/runtime/bin:dart_io_api",
+     "//third_party/rapidjson",
+-    "zpert_path",
+     "//third_party/skia",
+   ]
+ 
+diff --git a/lib/ui/dart_ui.cc b/lib/ui/dart_ui.cc
+index 1d1d48b10..313aefc5d 100644
+--- a/lib/ui/dart_ui.cc
++++ b/lib/ui/dart_ui.cc
+@@ -31,7 +31,6 @@
+ #include "flutter/lib/ui/window/window.h"
+ #include "third_party/tonic/converter/dart_converter.h"
+ #include "third_party/tonic/logging/dart_error.h"
+-#include "../../zpert/src/platforms/flutter_api.h"
+ 
+ #if defined(LEGACY_FUCHSIA_EMBEDDER)
+ #include "flutter/lib/ui/compositing/scene_host.h"  // nogncheck
+@@ -60,7 +59,6 @@ void DartUI::InitForGlobal() {
+   if (!g_natives) {
+     g_natives = new tonic::DartLibraryNatives();
+     Canvas::RegisterNatives(g_natives);
+-    ZFlutterView::RegisterNatives(g_natives);
+     CanvasGradient::RegisterNatives(g_natives);
+     CanvasImage::RegisterNatives(g_natives);
+     CanvasPath::RegisterNatives(g_natives);
+diff --git a/lib/ui/dart_ui.gni b/lib/ui/dart_ui.gni
+index 6b1d28298..28cb82e9c 100644
+--- a/lib/ui/dart_ui.gni
++++ b/lib/ui/dart_ui.gni
+@@ -13,7 +13,6 @@ dart_ui_files = [
+   "//flutter/lib/ui/lerp.dart",
+   "//flutter/lib/ui/natives.dart",
+   "//flutter/lib/ui/painting.dart",
+-  "//flutter/lib/ui/zpert.dart",
+   "//flutter/lib/ui/plugins.dart",
+   "//flutter/lib/ui/pointer.dart",
+   "//flutter/lib/ui/semantics.dart",
+diff --git a/lib/ui/ui.dart b/lib/ui/ui.dart
+index b568cdc11..7612cf509 100644
+--- a/lib/ui/ui.dart
++++ b/lib/ui/ui.dart
+@@ -38,5 +38,3 @@ part 'pointer.dart';
+ part 'semantics.dart';
+ part 'text.dart';
+ part 'window.dart';
+-part 'zpert.dart';
+-
