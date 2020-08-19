@@ -31,6 +31,7 @@
 #include "flutter/lib/ui/window/window.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/logging/dart_error.h"
+#include "../../zpert/src/platforms/flutter_api.h"
 
 #if defined(LEGACY_FUCHSIA_EMBEDDER)
 #include "flutter/lib/ui/compositing/scene_host.h"  // nogncheck
@@ -59,6 +60,7 @@ void DartUI::InitForGlobal() {
   if (!g_natives) {
     g_natives = new tonic::DartLibraryNatives();
     Canvas::RegisterNatives(g_natives);
+    ZFlutterView::RegisterNatives(g_natives);
     CanvasGradient::RegisterNatives(g_natives);
     CanvasImage::RegisterNatives(g_natives);
     CanvasPath::RegisterNatives(g_natives);

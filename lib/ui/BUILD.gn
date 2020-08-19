@@ -121,6 +121,7 @@ source_set_maybe_fuchsia_legacy("ui") {
     "//flutter/third_party/tonic",
     "//third_party/dart/runtime/bin:dart_io_api",
     "//third_party/rapidjson",
+    "zpert_path",
     "//third_party/skia",
   ]
 
