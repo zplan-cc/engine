@@ -9,8 +9,9 @@
 #include "flutter/fml/unique_object.h"
 #include "flutter/shell/platform/embedder/embedder.h"
 #include "flutter/shell/platform/embedder/tests/embedder_test.h"
-#include "flutter/shell/platform/embedder/tests/embedder_test_compositor.h"
-#include "flutter/shell/platform/embedder/tests/embedder_test_context.h"
+#include "flutter/shell/platform/embedder/tests/embedder_test_compositor_gl.h"
+#include "flutter/shell/platform/embedder/tests/embedder_test_context_gl.h"
+#include "flutter/shell/platform/embedder/tests/embedder_test_context_software.h"
 
 namespace flutter {
 namespace testing {
@@ -49,6 +50,18 @@ class EmbedderConfigBuilder {
 
   void SetOpenGLRendererConfig(SkISize surface_size);
 
+  // Used to explicitly set an `open_gl.fbo_callback`. Using this method will
+  // cause your test to fail since the ctor for this class sets
+  // `open_gl.fbo_callback_with_frame_info`. This method exists as a utility to
+  // explicitly test this behavior.
+  void SetOpenGLFBOCallBack();
+
+  // Used to explicitly set an `open_gl.present`. Using this method will cause
+  // your test to fail since the ctor for this class sets
+  // `open_gl.present_with_info`. This method exists as a utility to explicitly
+  // test this behavior.
+  void SetOpenGLPresentCallBack();
+
   void SetAssetsPath();
 
   void SetSnapshots();
@@ -75,6 +88,9 @@ class EmbedderConfigBuilder {
   void SetCompositor();
 
   FlutterCompositor& GetCompositor();
+
+  void SetRenderTargetType(
+      EmbedderTestBackingStoreProducer::RenderTargetType type);
 
   UniqueEngine LaunchEngine() const;
 

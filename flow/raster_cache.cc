@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "flutter/common/constants.h"
 #include "flutter/flow/layers/layer.h"
 #include "flutter/flow/paint_utils.h"
 #include "flutter/fml/logging.h"
@@ -169,7 +170,6 @@ std::unique_ptr<RasterCacheResult> RasterCache::RasterizeLayer(
             context->texture_registry,
             context->has_platform_view ? nullptr : context->raster_cache,
             context->checkerboard_offscreen_layers,
-            context->frame_physical_depth,
             context->frame_device_pixel_ratio};
         if (layer->needs_painting()) {
           layer->Paint(paintContext);
@@ -299,35 +299,33 @@ void RasterCache::SetCheckboardCacheImages(bool checkerboard) {
 
 void RasterCache::TraceStatsToTimeline() const {
 #if !FLUTTER_RELEASE
+  FML_TRACE_COUNTER("flutter", "RasterCache", reinterpret_cast<int64_t>(this),
+                    "LayerCount", layer_cache_.size(), "LayerMBytes",
+                    EstimateLayerCacheByteSize() / kMegaByteSizeInBytes,
+                    "PictureCount", picture_cache_.size(), "PictureMBytes",
+                    EstimatePictureCacheByteSize() / kMegaByteSizeInBytes);
 
-  size_t layer_cache_count = 0;
+#endif  // !FLUTTER_RELEASE
+}
+
+size_t RasterCache::EstimateLayerCacheByteSize() const {
   size_t layer_cache_bytes = 0;
-  size_t picture_cache_count = 0;
-  size_t picture_cache_bytes = 0;
-
   for (const auto& item : layer_cache_) {
-    layer_cache_count++;
     if (item.second.image) {
       layer_cache_bytes += item.second.image->image_bytes();
     }
   }
+  return layer_cache_bytes;
+}
 
+size_t RasterCache::EstimatePictureCacheByteSize() const {
+  size_t picture_cache_bytes = 0;
   for (const auto& item : picture_cache_) {
-    picture_cache_count++;
     if (item.second.image) {
       picture_cache_bytes += item.second.image->image_bytes();
     }
   }
-
-  FML_TRACE_COUNTER("flutter", "RasterCache",
-                    reinterpret_cast<int64_t>(this),             //
-                    "LayerCount", layer_cache_count,             //
-                    "LayerMBytes", layer_cache_bytes * 1e-6,     //
-                    "PictureCount", picture_cache_count,         //
-                    "PictureMBytes", picture_cache_bytes * 1e-6  //
-  );
-
-#endif  // !FLUTTER_RELEASE
+  return picture_cache_bytes;
 }
 
 }  // namespace flutter
